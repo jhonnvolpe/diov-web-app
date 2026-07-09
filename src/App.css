@@ -1,11 +1,9 @@
 /* ═══════════════════════════════════════════
-   DIOV — Daily Mental Operating System
-   All custom styles and animations
+   DIOV - Daily Mental Operating System
+   Reference-matched premium glassmorphism
    ═══════════════════════════════════════════ */
 
 /* ─── Font Setup ─── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
-
 .diov-serif {
   font-family: 'Cormorant Garamond', serif;
 }
@@ -74,21 +72,23 @@
   animation: diovTwinkle var(--dur) ease-in-out infinite;
 }
 
-/* ─── Glass Cards ─── */
+/* ─── Refined Glass Cards (matching reference) ─── */
 .diov-glass-card {
-  background: rgba(255,255,255,0.03);
+  background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
 .diov-glass-card-strong {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.12);
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
-  border-radius: 24px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 22px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
 .diov-glass-pill {
@@ -119,9 +119,46 @@
   scrollbar-width: none;
 }
 
-/* ─── CTA Button ─── */
-.diov-cta-btn {
-  box-shadow: 0 4px 30px rgba(255,255,255,0.15);
+/* ─── Intensity Selector (matching reference) ─── */
+.diov-intensity-active {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 100px;
+  color: rgba(255,255,255,0.95);
+  box-shadow: 0 0 20px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.diov-intensity-inactive {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 100px;
+  color: rgba(255,255,255,0.3);
+}
+
+.diov-intensity-inactive:hover {
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.5);
+}
+
+/* ─── Main CTA Button (matching reference) ─── */
+.diov-main-cta {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.85);
+  box-shadow:
+    0 2px 20px rgba(0,0,0,0.2),
+    0 0 40px rgba(139,92,246,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  border-radius: 100px;
+}
+
+.diov-main-cta:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.2);
+  box-shadow:
+    0 4px 30px rgba(0,0,0,0.3),
+    0 0 60px rgba(139,92,246,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 /* ─── Animations ─── */
@@ -142,17 +179,12 @@
 }
 
 @keyframes diovFadeIn {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes diovFadeInScale {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
 @keyframes diovSlideUp {
-  from { opacity: 0; transform: translateY(40px); }
+  from { opacity: 0; transform: translateY(32px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -167,37 +199,6 @@
   100% { opacity: 0; transform: translateY(-60px) scale(1.5); }
 }
 
-@keyframes diovShimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-
-@keyframes diovBreatheOrb {
-  0%, 100% { transform: scale(1); opacity: 0.15; }
-  50% { transform: scale(1.4); opacity: 0.35; }
-}
-
-@keyframes diovRingExpand {
-  0% { transform: scale(1); opacity: 0.5; }
-  100% { transform: scale(2.2); opacity: 0; }
-}
-
-@keyframes diovSunIgnite {
-  0% { transform: scale(0.8); opacity: 0.6; }
-  50% { transform: scale(1.1); opacity: 1; }
-  100% { transform: scale(0.8); opacity: 0.6; }
-}
-
-@keyframes diovSunRays {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes diovProgressGlow {
-  0%, 100% { box-shadow: 0 0 10px rgba(251,191,36,0.3); }
-  50% { box-shadow: 0 0 25px rgba(251,191,36,0.6); }
-}
-
 /* ─── Animation Classes ─── */
 .diov-fade-in {
   animation: diovFadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -208,7 +209,7 @@
 }
 
 .diov-slide-up {
-  animation: diovSlideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: diovSlideUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .diov-dissolve-text {
@@ -222,6 +223,11 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: diovShimmer 4s linear infinite;
+}
+
+@keyframes diovShimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
 }
 
 /* ─── Breathing Orb ─── */
@@ -240,6 +246,16 @@
   border-radius: 50%;
   border: 1px solid rgba(167,139,250,0.15);
   animation: diovRingExpand 3s ease-out infinite;
+}
+
+@keyframes diovBreatheOrb {
+  0%, 100% { transform: scale(1); opacity: 0.15; }
+  50% { transform: scale(1.4); opacity: 0.35; }
+}
+
+@keyframes diovRingExpand {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(2.2); opacity: 0; }
 }
 
 /* ─── Sun / Alarm ─── */
@@ -279,6 +295,17 @@
   animation: diovSunRays 10s linear infinite;
 }
 
+@keyframes diovSunIgnite {
+  0% { transform: scale(0.8); opacity: 0.6; }
+  50% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(0.8); opacity: 0.6; }
+}
+
+@keyframes diovSunRays {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* ─── Glow Text ─── */
 .diov-glow-text {
   text-shadow: 0 0 40px rgba(139,92,246,0.3), 0 0 80px rgba(139,92,246,0.1);
@@ -286,10 +313,6 @@
 
 .diov-glow-text-gold {
   text-shadow: 0 0 40px rgba(251,191,36,0.4), 0 0 80px rgba(251,191,36,0.15);
-}
-
-.diov-glow-text-red {
-  text-shadow: 0 0 40px rgba(239,68,68,0.3), 0 0 80px rgba(239,68,68,0.1);
 }
 
 /* ─── Progress Bar (Hold to Dismiss) ─── */
@@ -323,6 +346,11 @@
   animation: diovProgressGlow 1.5s ease-in-out infinite;
 }
 
+@keyframes diovProgressGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(251,191,36,0.3); }
+  50% { box-shadow: 0 0 25px rgba(251,191,36,0.6); }
+}
+
 /* ─── Smoke Particles ─── */
 .diov-smoke-particle {
   position: absolute;
@@ -333,28 +361,13 @@
   animation: diovSmokeRise 2s ease-out forwards;
 }
 
-/* ─── Cycle Bars ─── */
-.diov-cycle-bar {
-  height: 3px;
-  border-radius: 2px;
-  display: inline-block;
-  margin: 0 1px;
-}
-
-/* ─── Time Input Override ─── */
-input[type="time"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-  opacity: 0.4;
-  cursor: pointer;
-}
-
 /* ─── Grain Overlay ─── */
 .diov-grain-overlay {
   position: fixed;
   inset: 0;
   z-index: 9999;
   pointer-events: none;
-  opacity: 0.03;
+  opacity: 0.025;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   animation: diovGrain 0.5s steps(1) infinite;
 }
@@ -370,9 +383,4 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   70% { transform: translate(-1%,-1%); }
   80% { transform: translate(1%,1%); }
   90% { transform: translate(-2%,-2%); }
-}
-
-/* ─── Transition Utilities ─── */
-.duration-800 {
-  transition-duration: 800ms;
 }
