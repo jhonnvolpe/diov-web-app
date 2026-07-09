@@ -214,24 +214,22 @@ export default function Dashboard({ onInitSleep }: DashboardProps) {
             </div>
 
             {/* ─── Tonight's Intention ─── */}
-            {todayPromise && (
-              <div className="space-y-2">
-                <p className="text-[10px] tracking-[0.25em] text-white/30 uppercase font-medium text-center">
-                  TONIGHT&apos;S INTENTION
-                </p>
-                <div className="diov-glass-card p-4 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/40">
-                      <circle cx="12" cy="12" r="4" />
-                      <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-20 12 12)" />
-                    </svg>
-                  </div>
-                  <p className="diov-serif text-sm font-light italic text-white/60 truncate">
-                    &ldquo;{todayPromise.text}&rdquo;
-                  </p>
+            <div className="space-y-2">
+              <p className="text-[10px] tracking-[0.25em] text-white/30 uppercase font-medium text-center">
+                TONIGHT&apos;S INTENTION
+              </p>
+              <div className="diov-glass-card p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/40">
+                    <circle cx="12" cy="12" r="4" />
+                    <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-20 12 12)" />
+                  </svg>
                 </div>
+                <p className={`text-sm truncate ${todayPromise ? 'diov-serif font-light italic text-white/60' : 'text-white/25 font-light'}`}>
+                  {todayPromise ? `\u201C${todayPromise.text}\u201D` : 'Set your intention during the ritual...'}
+                </p>
               </div>
-            )}
+            </div>
 
             {/* ─── Optimal Bedtimes ─── */}
             <div className="space-y-2">
@@ -249,7 +247,7 @@ export default function Dashboard({ onInitSleep }: DashboardProps) {
                       <div className="flex items-center justify-center gap-1.5 mb-1">
                         {cycleIcons[idx]}
                         <p className="text-lg font-light text-white/90">
-                          {c.time12.replace(' ', '').toLowerCase()}
+                          {c.time12.toLowerCase()}
                         </p>
                       </div>
                       <p className="text-[9px] text-white/30">

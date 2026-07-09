@@ -110,7 +110,9 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen w-full overflow-hidden" style={{ background: '#050208' }}>
+    <div className="min-h-screen w-full overflow-hidden flex justify-center" style={{ background: '#050208' }}>
+      {/* Mobile container - max-width like a phone screen */}
+      <div className="w-full max-w-[430px] relative overflow-hidden" style={{ background: '#050208' }}>
       <CosmicBackground />
 
       {/* Main views */}
@@ -155,6 +157,7 @@ export default function App() {
           <Gratitude onComplete={handleGratitudeComplete} />
         </div>
       )}
+      </div>{/* end mobile container */}
     </div>
   );
 }
