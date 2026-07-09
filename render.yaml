@@ -1,0 +1,20 @@
+# DIOV — Render Deployment Configuration
+# This deploys the React frontend as a static site
+# The backend API (diov-api) is deployed separately on Render
+
+services:
+  # Frontend — Static Site
+  - type: web
+    name: diov-web-app
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        value: https://diov-api.onrender.com/api/trpc
+      - key: NODE_VERSION
+        value: "20"

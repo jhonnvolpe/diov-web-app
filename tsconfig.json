@@ -20,6 +20,9 @@
       "@contracts/*": [
         "./contracts/*"
       ],
+      "@api/*": [
+        "./api/*"
+      ],
       "@db/*": [
         "./db/*"
       ]

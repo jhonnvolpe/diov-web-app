@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import './App.css';
+import { syncFromApi } from '@/lib/diovStorage';
 import Dashboard from '@/components/Dashboard';
 import RitualOverlay from '@/components/RitualOverlay';
 import CountdownTransition from '@/components/CountdownTransition';
@@ -34,6 +35,9 @@ export default function App() {
   const [sleepQuality, setSleepQuality] = useState(0);
 
   const settings = getSettings();
+
+  // Sync data from API on app load
+  useEffect(() => { syncFromApi(); }, []);
 
   // ─── SLEEP FLOW ───
   const startRitual = useCallback(() => setView('ritual'), []);

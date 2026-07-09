@@ -18,6 +18,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
       "@contracts": path.resolve(__dirname, "./contracts"),
       "@db": path.resolve(__dirname, "./db"),
+      "@api": path.resolve(__dirname, "./api"),
       "db": path.resolve(__dirname, "./db"),
     },
   },

@@ -17,6 +17,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@contracts/*": ["./contracts/*"],
+      "@api/*": ["./api/*"],
       "@db/*": ["./db/*"]
     }
   },

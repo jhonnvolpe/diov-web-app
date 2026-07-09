@@ -5,13 +5,15 @@ import superjson from "superjson";
 import type { AppRouter } from "../../api/router";
 import type { ReactNode } from "react";
 
+const API_URL = import.meta.env.VITE_API_URL || "/api/trpc";
+
 export const trpc = createTRPCReact<AppRouter>();
 
 const queryClient = new QueryClient();
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: "/api/trpc",
+      url: API_URL,
       transformer: superjson,
       fetch(input, init) {
         return globalThis.fetch(input, {
