@@ -91,8 +91,6 @@ export default function SleepMode({ wakeTime, onTriggerAlarm, onComplete, onCanc
         {/* Orb with breathing labels */}
         <div className="relative w-64 h-64 flex items-center justify-center mb-4">
           <img src="/orb-sleep.png" alt="" className="w-full h-full object-contain diov-orb-pulse" />
-          <div className="diov-orb-ring" style={{ animationDelay: '0s' }} />
-          <div className="diov-orb-ring" style={{ animationDelay: '1.5s' }} />
 
           <div className="absolute -top-2 left-1/2 -translate-x-1/2 text-center">
             <span className={`text-[10px] tracking-[0.2em] font-medium uppercase transition-all duration-500 ${breathPhase === 0 ? 'text-amber-300/80' : 'text-white/15'}`}>{breathLabels[0]}</span>

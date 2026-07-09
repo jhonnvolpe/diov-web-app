@@ -161,9 +161,9 @@ export const WAKE_TRANSCRIPTS = shuffle([
 
 // Countdown phrases
 export const COUNTDOWN_PHRASES = [
-  "BREATHE IN... HOLD... PREPARE.",
-  "SYSTEMS ALIGNING...",
-  "PROTOCOL ACTIVATING...",
+  "Breathe in... hold... prepare.",
+  "Systems aligning...",
+  "Protocol activating...",
 ];
 
 // Quality rating context
@@ -204,12 +204,14 @@ export const ALARM_SILENCED_MESSAGES = shuffle([
   { main: "Alarm dismissed. Vertical position required.", sub: "Start wake sequence." },
 ]);
 
-// Burden prompt alternatives
+// Burden prompts — system metaphor + emotional depth
 export const BURDEN_PROMPTS = shuffle([
   "What's still running in your system?",
-  "What processes need to be terminated?",
-  "What are you carrying into sleep?",
-  "What loop is still playing?",
+  "What are you carrying into tonight?",
+  "What won't let you rest?",
+  "Name the weight. Then set it down.",
+  "What is heaviest right now?",
+  "What needs to end before sleep begins?",
 ]);
 
 // Burn phrases

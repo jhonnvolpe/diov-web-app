@@ -30,8 +30,6 @@ export default function CountdownTransition({ onComplete }: Props) {
 
         <div className={`relative w-64 h-64 mb-8 transition-all duration-1000 ${orbVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}>
           <img src="/orb-sleep.png" alt="" className="w-full h-full object-contain diov-orb-pulse" />
-          <div className="diov-orb-ring" style={{ animationDelay: '0s' }} />
-          <div className="diov-orb-ring" style={{ animationDelay: '1s' }} />
         </div>
 
         <div className="relative h-32 flex items-center justify-center">

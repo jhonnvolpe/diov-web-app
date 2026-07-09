@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Settings, Gem, Moon, Sun, BedDouble, Timer } from 'lucide-react';
+import { Settings, Gem, Moon, Sun, BedDouble, Timer, ChevronRight } from 'lucide-react';
 import { formatTime12, DASHBOARD_QUOTES, intensityLabels, intensityDescriptions, calculateSleepCycles, getMoonPhase } from '@/lib/diovUtils';
 import { getStreak, getSleepLogs, getIntegrityScore, getSettings, saveSettings, type DiovSettings } from '@/lib/diovStorage';
 import CosmicBackground from './CosmicBackground';
@@ -11,6 +11,7 @@ export default function Dashboard({ onInitSleep }: Props) {
   const [tab, setTab] = useState<'sequence' | 'stats'>('sequence');
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState<DiovSettings>(getSettings);
+  const [timeModal, setTimeModal] = useState<'sleep' | 'wake' | null>(null);
 
   const streak = getStreak().count;
   const moonPhase = getMoonPhase(time);
@@ -20,10 +21,7 @@ export default function Dashboard({ onInitSleep }: Props) {
   const integrity = getIntegrityScore();
   const cycles = calculateSleepCycles(settings.wakeTime);
 
-  const quote = useMemo(() => {
-    const idx = time.getDate() % DASHBOARD_QUOTES.length;
-    return DASHBOARD_QUOTES[idx];
-  }, []);
+  const quote = useMemo(() => { const idx = time.getDate() % DASHBOARD_QUOTES.length; return DASHBOARD_QUOTES[idx]; }, []);
 
   const todayPromise = useMemo(() => {
     const today = new Date().toISOString().split('T')[0];
@@ -31,10 +29,7 @@ export default function Dashboard({ onInitSleep }: Props) {
     return promises.find((p: { date: string }) => p.date === today);
   }, []);
 
-  useEffect(() => {
-    const i = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(i);
-  }, []);
+  useEffect(() => { const i = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(i); }, []);
 
   const update = <K extends keyof DiovSettings>(k: K, v: DiovSettings[K]) => {
     const n = { ...settings, [k]: v };
@@ -101,38 +96,35 @@ export default function Dashboard({ onInitSleep }: Props) {
 
         {tab === 'sequence' ? (
           <div className="flex-1 px-5 pb-8 space-y-4 diov-fade-in">
-            {/* Sleep / Wake */}
+            {/* Sleep / Wake — TAPPABLE */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="diov-glass-card p-4 text-center space-y-2">
+              <button onClick={() => setTimeModal('sleep')} className="diov-glass-card p-4 text-center space-y-2 transition-all active:scale-[0.97] hover:bg-white/[0.06]">
                 <Moon className="w-5 h-5 text-white/40 mx-auto" strokeWidth={1.5} />
                 <p className="text-[9px] tracking-[0.2em] text-white/30 uppercase font-medium">SLEEP</p>
                 <p className="text-2xl font-light text-white/90">{formatTime12(settings.sleepTime)}</p>
                 <p className="text-[10px] text-white/30 font-light">Time for deep rest.</p>
-              </div>
-              <div className="diov-glass-card p-4 text-center space-y-2">
+                <ChevronRight className="w-3 h-3 text-white/20 mx-auto" />
+              </button>
+              <button onClick={() => setTimeModal('wake')} className="diov-glass-card p-4 text-center space-y-2 transition-all active:scale-[0.97] hover:bg-white/[0.06]">
                 <Sun className="w-5 h-5 text-amber-400/60 mx-auto" strokeWidth={1.5} />
                 <p className="text-[9px] tracking-[0.2em] text-white/30 uppercase font-medium">WAKE</p>
                 <p className="text-2xl font-light text-white/90">{formatTime12(settings.wakeTime)}</p>
                 <p className="text-[10px] text-white/30 font-light">Ignite your focus.</p>
-              </div>
+                <ChevronRight className="w-3 h-3 text-white/20 mx-auto" />
+              </button>
             </div>
 
-            {/* Hidden time inputs for editing */}
-            <div className="grid grid-cols-2 gap-3 opacity-0 h-0 overflow-hidden">
-              <input type="time" value={settings.sleepTime} onChange={e => update('sleepTime', e.target.value)} className="diov-glass-card p-3 text-center text-white/80 text-sm outline-none bg-transparent" />
-              <input type="time" value={settings.wakeTime} onChange={e => update('wakeTime', e.target.value)} className="diov-glass-card p-3 text-center text-white/80 text-sm outline-none bg-transparent" />
-            </div>
-
-            {/* Tonight's Intention */}
+            {/* Tonight's Intention — shows locked promise */}
             <div className="space-y-2">
               <p className="text-[10px] tracking-[0.25em] text-white/30 uppercase font-medium text-center">TONIGHT&apos;S INTENTION</p>
-              <div className="diov-glass-card p-4 flex items-center gap-3">
+              <div className={`p-4 flex items-center gap-3 ${todayPromise ? 'diov-glass-card' : 'border border-dashed border-white/10 rounded-[18px]'}`}>
                 <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/40"><circle cx="12" cy="12" r="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-20 12 12)"/></svg>
                 </div>
-                <p className={`text-sm truncate ${todayPromise ? 'diov-serif font-light italic text-white/60' : 'text-white/25 font-light'}`}>
-                  {todayPromise ? `\u201C${todayPromise.text}\u201D` : 'Set your intention during the ritual...'}
+                <p className={`text-sm truncate flex-1 text-left ${todayPromise ? 'diov-serif font-light italic text-white/60' : 'text-white/25 font-light'}`}>
+                  {todayPromise ? `\u201C${todayPromise.text}\u201D` : 'Locked during ritual. Tap Initialize to begin.'}
                 </p>
+                {todayPromise && <div className="w-2 h-2 rounded-full bg-amber-400/60 flex-shrink-0" title="Locked" />}
               </div>
             </div>
 
@@ -213,6 +205,29 @@ export default function Dashboard({ onInitSleep }: Props) {
           </div>
         )}
       </div>
+
+      {/* Time Picker Modal */}
+      {timeModal && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center px-6">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setTimeModal(null)} />
+          <div className="relative diov-glass-card-strong p-6 w-full max-w-xs space-y-5 diov-slide-up">
+            <p className="text-[10px] tracking-[0.3em] text-white/40 uppercase font-medium text-center">
+              Set {timeModal === 'sleep' ? 'Sleep' : 'Wake'} Time
+            </p>
+            <div className="flex justify-center">
+              <input
+                type="time"
+                value={timeModal === 'sleep' ? settings.sleepTime : settings.wakeTime}
+                onChange={e => update(timeModal === 'sleep' ? 'sleepTime' : 'wakeTime', e.target.value)}
+                className="diov-glass-card p-4 text-center text-white/90 text-2xl font-light outline-none bg-transparent tabular-nums"
+              />
+            </div>
+            <button onClick={() => setTimeModal(null)} className="w-full py-3 rounded-full bg-white text-black text-sm font-semibold tracking-[0.12em] uppercase active:scale-95 transition-all">
+              Done
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
