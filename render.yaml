@@ -1,6 +1,18 @@
 # DIOV — Render Deployment Configuration
-# This deploys the React frontend as a static site
-# The backend API (diov-api) is deployed separately on Render
+# 
+# This repo contains BOTH frontend (React) and backend (tRPC API).
+# Deploy them as separate services on Render:
+#
+# 1. diov-web-app → Static Site (frontend only)
+#    Build: npm install && npm run build
+#    Publish: dist/public
+#
+# 2. diov-api → Web Service (backend API)
+#    Build: npm install && npm run build
+#    Start: npm start
+#    Environment: DATABASE_URL (from diov-db)
+#
+# 3. diov-db → PostgreSQL (already provisioned)
 
 services:
   # Frontend — Static Site
@@ -8,7 +20,7 @@ services:
     name: diov-web-app
     runtime: static
     buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
+    staticPublishPath: ./dist/public
     routes:
       - type: rewrite
         source: /*
@@ -18,3 +30,17 @@ services:
         value: https://diov-api.onrender.com/api/trpc
       - key: NODE_VERSION
         value: "20"
+
+  # Backend — Web Service (uncomment when ready to deploy API from this repo)
+  # - type: web
+  #   name: diov-api
+  #   runtime: node
+  #   buildCommand: npm install && npm run build
+  #   startCommand: npm start
+  #   envVars:
+  #     - key: DATABASE_URL
+  #       fromDatabase:
+  #         name: diov-db
+  #         property: connectionString
+  #     - key: NODE_ENV
+  #       value: production
