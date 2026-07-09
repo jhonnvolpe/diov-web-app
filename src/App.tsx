@@ -1,163 +1,162 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import './App.css';
-import CosmicBackground from '@/components/CosmicBackground';
 import Dashboard from '@/components/Dashboard';
 import RitualOverlay from '@/components/RitualOverlay';
+import CountdownTransition from '@/components/CountdownTransition';
 import SleepMode from '@/components/SleepMode';
+import SleepComplete from '@/components/SleepComplete';
 import AlarmView from '@/components/AlarmView';
+import AlarmSilenced from '@/components/AlarmSilenced';
+import WakeCountdown from '@/components/WakeCountdown';
+import WakeActive from '@/components/WakeActive';
 import QualityRating from '@/components/QualityRating';
 import PromiseCheck from '@/components/PromiseCheck';
 import Gratitude from '@/components/Gratitude';
-import {
-  getSettings,
-  addSleepLog,
-  markPromiseKept,
-  updateStreak,
-} from '@/lib/diovStorage';
+import { getSettings, addSleepLog, markPromiseKept, updateStreak } from '@/lib/diovStorage';
 import { getYesterdayPromise } from '@/lib/diovStorage';
 
-type View = 'dashboard' | 'sleep' | 'alarm';
-type PostWake = 'quality' | 'promise-check' | 'gratitude' | null;
+type View =
+  | 'dashboard'
+  | 'ritual'
+  | 'countdown'
+  | 'sleep'
+  | 'sleep-complete'
+  | 'alarm'
+  | 'alarm-silenced'
+  | 'wake-countdown'
+  | 'wake-active'
+  | 'quality'
+  | 'promise-check'
+  | 'gratitude';
 
 export default function App() {
   const [view, setView] = useState<View>('dashboard');
-  const [showRitual, setShowRitual] = useState(false);
-  const [postWake, setPostWake] = useState<PostWake>(null);
   const [sleepQuality, setSleepQuality] = useState(0);
 
   const settings = getSettings();
 
-  // Check for alarm trigger every second while in sleep mode
-  useEffect(() => {
-    if (view !== 'sleep') return;
-    const interval = setInterval(() => {
-      const now = new Date();
-      const [h, m] = settings.wakeTime.split(':').map(Number);
-      if (now.getHours() === h && now.getMinutes() === m && now.getSeconds() === 0) {
-        triggerAlarm();
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [view, settings.wakeTime]);
+  // ─── SLEEP FLOW ───
+  const startRitual = useCallback(() => setView('ritual'), []);
 
-  const handleInitSleep = useCallback(() => {
-    setShowRitual(true);
-  }, []);
+  const ritualComplete = useCallback(() => setView('countdown'), []);
 
-  const handleRitualConfirm = useCallback(() => {
-    setShowRitual(false);
-    setView('sleep');
-  }, []);
+  const ritualCancel = useCallback(() => setView('dashboard'), []);
 
-  const handleRitualClose = useCallback(() => {
-    setShowRitual(false);
-  }, []);
+  const countdownComplete = useCallback(() => setView('sleep'), []);
 
-  const triggerAlarm = useCallback(() => {
-    setView('alarm');
-  }, []);
+  const triggerAlarm = useCallback(() => setView('alarm'), []);
 
-  const handleDismissAlarm = useCallback(() => {
-    updateStreak();
-    // Check if there's a yesterday's promise to check
-    const yp = getYesterdayPromise();
-    if (yp) {
-      setPostWake('promise-check');
-    } else {
-      setPostWake('quality');
-    }
-  }, []);
+  const sleepCancel = useCallback(() => setView('dashboard'), []);
 
-  const handleSnooze = useCallback(() => {
-    setView('sleep');
-    // Re-trigger alarm after 5 minutes
-    setTimeout(() => {
-      triggerAlarm();
-    }, 300000);
-  }, [triggerAlarm]);
+  const sleepComplete = useCallback(() => setView('sleep-complete'), []);
 
-  const handleQualitySubmit = useCallback((rating: number) => {
+  // ─── WAKE FLOW ───
+  const stopAlarm = useCallback(() => setView('alarm-silenced'), []);
+
+  const startWake = useCallback(() => setView('wake-countdown'), []);
+
+  const wakeCountdownComplete = useCallback(() => setView('wake-active'), []);
+
+  // ─── POST-WAKE FLOW ───
+  const submitQuality = useCallback((rating: number) => {
     setSleepQuality(rating);
     const yp = getYesterdayPromise();
     if (yp) {
-      setPostWake('promise-check');
+      setView('promise-check');
     } else {
-      setPostWake('gratitude');
+      addSleepLog(rating, settings.sleepTime, settings.wakeTime, null, '');
+      setView('gratitude');
     }
-  }, []);
+  }, [settings]);
 
-  const handlePromiseAnswer = useCallback(
-    (kept: boolean) => {
-      markPromiseKept(kept);
-      addSleepLog(sleepQuality, settings.sleepTime, settings.wakeTime, kept);
-      setPostWake('gratitude');
-    },
-    [sleepQuality, settings]
-  );
+  const answerPromise = useCallback((kept: boolean) => {
+    markPromiseKept(kept);
+    addSleepLog(sleepQuality, settings.sleepTime, settings.wakeTime, kept, '');
+    setView('gratitude');
+  }, [sleepQuality, settings]);
 
-  const handleGratitudeComplete = useCallback((text: string) => {
-    // Update the last log with gratitude
+  const completeGratitude = useCallback((text: string) => {
+    updateStreak();
     const logs = JSON.parse(localStorage.getItem('diov_sleep_logs') || '[]');
     const today = new Date().toISOString().split('T')[0];
     const entry = logs.find((l: { date: string }) => l.date === today);
-    if (entry) {
-      entry.gratitude = text;
-      localStorage.setItem('diov_sleep_logs', JSON.stringify(logs));
-    }
-    setPostWake(null);
-    setView('dashboard');
+    if (entry) { entry.gratitude = text; localStorage.setItem('diov_sleep_logs', JSON.stringify(logs)); }
     setSleepQuality(0);
+    setView('dashboard');
   }, []);
 
   return (
     <div className="min-h-screen w-full overflow-hidden flex justify-center" style={{ background: '#050208' }}>
-      {/* Mobile container - max-width like a phone screen */}
-      <div className="w-full max-w-[430px] relative overflow-hidden" style={{ background: '#050208' }}>
-      <CosmicBackground />
+      <div className="w-full max-w-[430px] relative overflow-hidden" style={{ background: view === 'dashboard' || view === 'ritual' || view === 'countdown' || view === 'sleep' || view === 'sleep-complete' || view === 'alarm' ? '#050208' : 'transparent' }}>
 
-      {/* Main views */}
-      {view === 'dashboard' && (
-        <Dashboard onInitSleep={handleInitSleep} />
-      )}
+        {view === 'dashboard' && <Dashboard onInitSleep={startRitual} />}
 
-      {view === 'sleep' && (
-        <SleepMode wakeTime={settings.wakeTime} onTriggerAlarm={triggerAlarm} />
-      )}
+        {view === 'ritual' && (
+          <div className="fixed inset-0 z-50">
+            <RitualOverlay onConfirm={ritualComplete} onClose={ritualCancel} />
+          </div>
+        )}
 
-      {view === 'alarm' && (
-        <AlarmView
-          intensity={settings.wakeIntensity}
-          onDismiss={handleDismissAlarm}
-          onSnooze={handleSnooze}
-        />
-      )}
+        {view === 'countdown' && (
+          <div className="fixed inset-0 z-50">
+            <CountdownTransition onComplete={countdownComplete} />
+          </div>
+        )}
 
-      {/* Ritual Overlay (on top of everything) */}
-      {showRitual && (
-        <div className="fixed inset-0 z-50">
-          <RitualOverlay onConfirm={handleRitualConfirm} onClose={handleRitualClose} />
-        </div>
-      )}
+        {view === 'sleep' && (
+          <div className="fixed inset-0 z-50">
+            <SleepMode wakeTime={settings.wakeTime} onTriggerAlarm={triggerAlarm} onComplete={sleepComplete} onCancel={sleepCancel} />
+          </div>
+        )}
 
-      {/* Post-wake flow (on top of everything) */}
-      {postWake === 'quality' && (
-        <div className="fixed inset-0 z-50">
-          <QualityRating onSubmit={handleQualitySubmit} />
-        </div>
-      )}
+        {view === 'sleep-complete' && (
+          <div className="fixed inset-0 z-50">
+            <SleepComplete onFadeOut={triggerAlarm} />
+          </div>
+        )}
 
-      {postWake === 'promise-check' && (
-        <div className="fixed inset-0 z-50">
-          <PromiseCheck onAnswer={handlePromiseAnswer} />
-        </div>
-      )}
+        {view === 'alarm' && (
+          <div className="fixed inset-0 z-50">
+            <AlarmView onStop={stopAlarm} />
+          </div>
+        )}
 
-      {postWake === 'gratitude' && (
-        <div className="fixed inset-0 z-50">
-          <Gratitude onComplete={handleGratitudeComplete} />
-        </div>
-      )}
-      </div>{/* end mobile container */}
+        {view === 'alarm-silenced' && (
+          <div className="fixed inset-0 z-50">
+            <AlarmSilenced onStartWake={startWake} />
+          </div>
+        )}
+
+        {view === 'wake-countdown' && (
+          <div className="fixed inset-0 z-50">
+            <WakeCountdown onComplete={wakeCountdownComplete} />
+          </div>
+        )}
+
+        {view === 'wake-active' && (
+          <div className="fixed inset-0 z-50">
+            <WakeActive onComplete={() => setView('quality')} onCancel={() => setView('dashboard')} />
+          </div>
+        )}
+
+        {view === 'quality' && (
+          <div className="fixed inset-0 z-50">
+            <QualityRating onSubmit={submitQuality} />
+          </div>
+        )}
+
+        {view === 'promise-check' && (
+          <div className="fixed inset-0 z-50">
+            <PromiseCheck onAnswer={answerPromise} />
+          </div>
+        )}
+
+        {view === 'gratitude' && (
+          <div className="fixed inset-0 z-50">
+            <Gratitude onComplete={completeGratitude} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
