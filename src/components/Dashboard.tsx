@@ -234,7 +234,7 @@ export default function Dashboard({ onInitSleep }: DashboardProps) {
             {/* ─── Optimal Bedtimes ─── */}
             <div className="space-y-2">
               <p className="text-[10px] tracking-[0.25em] text-white/30 uppercase font-medium text-center">
-                OPTIMAL BEDTIMES FOR {settings.wakeTime.replace(':', '')}
+                OPTIMAL BEDTIMES FOR {settings.wakeTime}
               </p>
               <div className="diov-glass-card p-4">
                 <div className="flex gap-2 justify-center">
@@ -246,8 +246,17 @@ export default function Dashboard({ onInitSleep }: DashboardProps) {
                     >
                       <div className="flex items-center justify-center gap-1.5 mb-1">
                         {cycleIcons[idx]}
-                        <p className="text-lg font-light text-white/90">
-                          {c.time12.toLowerCase()}
+                        <p className="text-base font-light text-white/90 tabular-nums">
+                          {(() => {
+                            const [h, rest] = c.time12.split(':');
+                            const min = rest?.split(' ')[0] || '00';
+                            const numH = parseInt(h);
+                            const isPm = c.time12.includes('p.m.');
+                            const isAm = c.time12.includes('a.m.');
+                            if (isPm && numH !== 12) return `${numH + 12}:${min}`;
+                            if (isAm && numH === 12) return `00:${min}`;
+                            return `${String(numH).padStart(2, '0')}:${min}`;
+                          })()}
                         </p>
                       </div>
                       <p className="text-[9px] text-white/30">
