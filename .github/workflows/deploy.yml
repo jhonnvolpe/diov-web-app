@@ -13,10 +13,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: Install dependencies
-        run: npm install
+          cache: "npm"
+      - name: Clean and install
+        run: |
+          rm -rf node_modules package-lock.json
+          npm cache clean --force
+          npm install --no-package-lock
       - name: Build frontend
-        run: npm run build
+        run: npx vite build
         env:
           VITE_API_URL: ${{ secrets.RENDER_API_URL || 'https://diov-api.onrender.com/api/trpc' }}
       - name: Deploy to Render
@@ -31,4 +35,4 @@ jobs:
       - uses: actions/checkout@v4
       - name: Trigger diov-api deploy
         run: |
-          curl -s -X POST             -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"             -H "Content-Type: application/json"             "https://api.render.com/v1/services/${{ secrets.RENDER_API_SERVICE_ID }}/deploys"             -d '{"clearCache": "do_not_clear"}' || echo "API deploy via git"
+          curl -s -X POST             -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"             -H "Content-Type: application/json"             "https://api.render.com/v1/services/${{ secrets.RENDER_API_SERVICE_ID }}/deploys"             -d '{"clearCache": "do_not_cler"}' || echo "API deploy via git"
